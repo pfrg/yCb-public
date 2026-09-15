@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parallel Stream Monitor (Dual Project)</title>
+    <script src="AgoraRTC_N-4.24.6.js"></script>
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; background: #000; color: #fff; margin: 0; padding: 10px; }
+        h2, h4 { text-align: center; }
+        .grid { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+        .player-card { background: #1a1a1a; border-radius: 6px; padding: 10px; width: 45%; }
+        .video-viewport { width: 100%; height: 360px; background: #282828; border-radius: 4px; overflow: hidden; }
+        .video-viewport video { transform: scaleX(-1) !important; }
+    </style>
+</head>
+<body>
+
+    <h2>Parallel Stream Monitor</h2>
+
+    <div class="grid">
+        <div class="player-card">
+            <h4>A: Camera Feed to be equipped with Yolo</h4>
+            <div id="stream-1-player" class="video-viewport"></div>
+        </div>
+        <div class="player-card">
+            <h4>B: Camera Feed seen by user through Cardboard</h4>
+            <div id="stream-2-player" class="video-viewport"></div>
+        </div>
+    </div>
+
+    <script>
+        // Project A Config
+        const appIdA = "1e57bfb22ec94e7da2f6c8d0ebb94628";
+        const tokenA = "007eJxTYLjseXVbDFd78fw7C7cztyzs+z+rW/Tl0oJZVvFOpmoBzrsVGAxTTc2T0pKMjFKTLU1SzVMSjdLMki1SDFKTkixNzIwsbDeuzGoIZGS4lHKQkZEBAkF8fgbHoPiwoPjw/KLs4oLE5FQGBgAp2CTX";
+
+        // Project B Config
+        const appIdB = "56ced53c4bc84bb8b3482df30facb529";
+        const tokenB = "007eJxTYND6WPLwzz6fz8vslPzPx00tUgzgmtu0nquu+OKRP+ePducpMJiaJaemmBonmyQlW5gkJVkkGZtYGKWkGRukJSYnmRpZCmxcmdUQyMjw8Z8tIyMDBIL4/AyOQfFhQfHh+UXZxQWJyakMDACVmyZE";
+
+        const channelName = "AR_VR_Workspace";
+                
+        const clientA = AgoraRTC.createClient({ mode: "live", codec: "h264", autoSubscribeAudio: false });
+        const clientB = AgoraRTC.createClient({ mode: "live", codec: "h264", autoSubscribeAudio: false });
+
+        // Stream 1 Listener (Handles UID 1 on Project A)
+        clientA.on("user-published", async (user, mediaType) => {
+            console.log("[Project A] User published:", user.uid, mediaType);
+            if (mediaType === "video") { 
+                await clientA.subscribe(user, mediaType);
+                user.videoTrack.play("stream-1-player", { mirror: false });
+                console.log("[Project A] Stream 1 playing!");
+                }
+        });
+
+        // Stream 2 Listener (Handles UID 2 on Project B)
+        clientB.on("user-published", async (user, mediaType) => {
+            console.log("[Project B] User published:", user.uid, mediaType);
+            if (mediaType === "video") {
+                await clientB.subscribe(user, mediaType);
+                user.videoTrack.play("stream-2-player", { mirror: false });
+                console.log("[Project B] Stream 2 playing!");
+                }
+        });
+
+        clientA.on("user-unpublished", (user, mediaType) => {
+            if (mediaType === "video") {
+                console.log("[Project A] Stream 1 stopped/unpublished");
+                }
+        });
+
+        clientB.on("user-unpublished", (user, mediaType) => {
+            if (mediaType === "video") {
+                console.log("[Project B] Stream 2 stopped/unpublished");
+                }
+        });
+        
+        async function startMonitor() {
+           try {
+                await clientA.setClientRole("audience");
+                await clientB.setClientRole("audience");
+               
+                // Web Client A joins Project A (UID null)
+                await clientA.join(appIdA, channelName, tokenA, null);
+                console.log("[Project A] Web Receiver Connected");
+
+                // Web Client B joins Project B (UID null)
+                await clientB.join(appIdB, channelName, tokenB, null);
+                console.log("[Project B] Web Receiver Connected");
+            } catch (err) {
+                console.error("[Agora Web Receiver Error]", err);
+            }
+        }
+
+        // Ensure startMonitor runs when the page loads
+        startMonitor();
+        
+    </script>
+</body>
+</html>

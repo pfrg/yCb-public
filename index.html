@@ -30,19 +30,15 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        const appIdA = urlParams.get('appIdA');
+        const appIdB = urlParams.get('appIdB');
         const tokenA = urlParams.get('tokenA');
         const tokenB = urlParams.get('tokenB');
         
-        if (!tokenA || !tokenB) {
-            console.error("Missing tokens. Provide tokenA and tokenB in the URL.");
-            alert("Missing Agora Tokens in URL. Format expected: ?tokenA=TOKEN_A&tokenB=TOKEN_B");
+        if (!appIdA || !appIdB || !tokenA || !tokenB) {
+            console.error("Missing tokens or appIds. Provide them in the URL.");
+            alert("Missing Agora Tokens or appIds in URL. Format expected: ?appIdA=APP_ID&appIdB=APP_ID&tokenA=TOKEN_A&tokenB=TOKEN_B");
         }
-        
-        // Project A Config
-        const appIdA = "1e57bfb22ec94e7da2f6c8d0ebb94628";
-        
-        // Project B Config
-        const appIdB = "56ced53c4bc84bb8b3482df30facb529";
         
         const channelName = "AR_VR_Workspace";
                 

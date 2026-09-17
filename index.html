@@ -34,6 +34,11 @@
         const appIdB = urlParams.get('appIdB')?.trim();
         const tokenA = urlParams.get('tokenA')?.trim();
         const tokenB = urlParams.get('tokenB')?.trim();
+
+        if (!appIdA || appIdA.length !== 32) {
+            console.error("appIdA is invalid or corrupted:", appIdA);
+        if (!appIdB || appIdB.length !== 32) {
+            console.error("appIdB is invalid or corrupted:", appIdB);
         
         if (!appIdA || !appIdB || !tokenA || !tokenB) {
             console.error("Missing tokens or appIds. Provide them in the URL.");

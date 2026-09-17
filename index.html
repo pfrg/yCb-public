@@ -30,10 +30,10 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const appIdA = urlParams.get('appIdA');
-        const appIdB = urlParams.get('appIdB');
-        const tokenA = urlParams.get('tokenA');
-        const tokenB = urlParams.get('tokenB');
+        const appIdA = urlParams.get('appIdA')?.trim();
+        const appIdB = urlParams.get('appIdB')?.trim();
+        const tokenA = urlParams.get('tokenA')?.trim();
+        const tokenB = urlParams.get('tokenB')?.trim();
         
         if (!appIdA || !appIdB || !tokenA || !tokenB) {
             console.error("Missing tokens or appIds. Provide them in the URL.");

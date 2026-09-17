@@ -29,14 +29,21 @@
     </div>
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenA = urlParams.get('tokenA');
+        const tokenB = urlParams.get('tokenB');
+        
+        if (!tokenA || !tokenB) {
+            console.error("Missing tokens. Provide tokenA and tokenB in the URL.");
+            alert("Missing Agora Tokens in URL. Format expected: ?tokenA=TOKEN_A&tokenB=TOKEN_B");
+        }
+        
         // Project A Config
         const appIdA = "1e57bfb22ec94e7da2f6c8d0ebb94628";
-        const tokenA = "007eJxTYLjseXVbDFd78fw7C7cztyzs+z+rW/Tl0oJZVvFOpmoBzrsVGAxTTc2T0pKMjFKTLU1SzVMSjdLMki1SDFKTkixNzIwsbDeuzGoIZGS4lHKQkZEBAkF8fgbHoPiwoPjw/KLs4oLE5FQGBgAp2CTX";
-
+        
         // Project B Config
         const appIdB = "56ced53c4bc84bb8b3482df30facb529";
-        const tokenB = "007eJxTYND6WPLwzz6fz8vslPzPx00tUgzgmtu0nquu+OKRP+ePducpMJiaJaemmBonmyQlW5gkJVkkGZtYGKWkGRukJSYnmRpZCmxcmdUQyMjw8Z8tIyMDBIL4/AyOQfFhQfHh+UXZxQWJyakMDACVmyZE";
-
+        
         const channelName = "AR_VR_Workspace";
                 
         const clientA = AgoraRTC.createClient({ mode: "live", codec: "h264", autoSubscribeAudio: false });
@@ -79,20 +86,22 @@
                 await clientA.setClientRole("audience");
                 await clientB.setClientRole("audience");
                
-                // Web Client A joins Project A (UID null)
+                // Web Client A joins Project A
                 await clientA.join(appIdA, channelName, tokenA, null);
                 console.log("[Project A] Web Receiver Connected");
 
-                // Web Client B joins Project B (UID null)
+                // Web Client B joins Project B
                 await clientB.join(appIdB, channelName, tokenB, null);
                 console.log("[Project B] Web Receiver Connected");
             } catch (err) {
                 console.error("[Agora Web Receiver Error]", err);
             }
         }
-
-        // Ensure startMonitor runs when the page loads
-        startMonitor();
+       
+       // Attempt connection only if both tokens are present in URL
+       if (tokenA && tokenB) {
+            startMonitor();
+        }
         
     </script>
 </body>

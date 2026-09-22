@@ -54,7 +54,7 @@
         // Stream 1 Listener (Handles UID on Project A)
         clientA.on("user-published", async (user, mediaType) => {
             console.log("[Project A] User published:", user.uid, mediaType);
-            if (mediaType === "video") { 
+            if (mediaType === "video" && user.uid === 1) { 
                 await clientA.subscribe(user, mediaType);
                 user.videoTrack.play("stream-1-player", { mirror: false });
                 console.log("[Project A] Stream 1 playing!");
@@ -64,7 +64,7 @@
         // Stream 2 Listener (Handles UID on Project B)
         clientB.on("user-published", async (user, mediaType) => {
             console.log("[Project B] User published:", user.uid, mediaType);
-            if (mediaType === "video") {
+            if (mediaType === "video" && user.uid === 2) {
                 await clientB.subscribe(user, mediaType);
                 user.videoTrack.play("stream-2-player", { mirror: false });
                 console.log("[Project B] Stream 2 playing!");

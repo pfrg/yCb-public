@@ -101,11 +101,11 @@
                 await clientB.setClientRole("audience");
                
                 // Web Client A joins Project A
-                await clientA.join(appIdA, channelName, tokenA, null);
+                await clientA.join(appIdA, channelName, tokenA, 1);
                 console.log("[Project A] Web Receiver Connected");
 
                 // Web Client B joins Project B
-                await clientB.join(appIdB, channelName, tokenB, null);
+                await clientB.join(appIdB, channelName, tokenB, 2);
                 console.log("[Project B] Web Receiver Connected");
             } catch (err) {
                 console.error("[Agora Web Receiver Error]", err);

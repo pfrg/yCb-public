@@ -46,16 +46,6 @@
         const isAppIdBValid = appIdB && appIdB.length === 32;
         const areTokensPresent = Boolean(tokenA) && Boolean(tokenB);
         
-        if (!isAppIdAValid) {
-            console.error("appIdA is missing or not 32 characters long:", appIdA);
-        }
-        if (!isAppIdBValid) {
-            console.error("appIdB is missing or not 32 characters long:", appIdB);
-        }
-        if (!areTokensPresent) {
-            console.error("Missing tokenA or tokenB in URL query parameters.");
-        }
-        
         const channelName = "AR_VR_Workspace";
                 
         const clientA = AgoraRTC.createClient({ mode: "live", codec: "h264", autoSubscribeAudio: false });
@@ -94,12 +84,19 @@
         });
         
         async function startMonitor() {
-           if (!isAppIdAValid || !isAppIdBValid || !areTokensPresent) {
-                console.error("Cannot start monitor: One or more parameters are invalid.");
-                alert("Connection aborted: Check console for parameter errors.");
+            if (!isAppIdAValid) {
+                console.error("[Abort] appIdA is missing or not 32 characters long:", appIdA);
                 return;
-           }
-           try {
+            }
+            if (!isAppIdBValid) {
+                console.error("[Abort] appIdB is missing or not 32 characters long:", appIdB);
+                return;
+            }
+            if (!areTokensPresent) {
+                console.error("[Abort] Missing tokenA or tokenB in URL query parameters.");
+                return;
+            }
+            try {
                 await clientA.setClientRole("audience");
                 await clientB.setClientRole("audience");
                

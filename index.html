@@ -54,7 +54,7 @@
         // Stream 1 Listener (Handles UID on Project A)
         clientA.on("user-published", async (user, mediaType) => {
             console.log("[Project A] User published:", user.uid, mediaType);
-            if (mediaType === "video" && user.uid === 1) { 
+            if (mediaType === "video") { 
                 await clientA.subscribe(user, mediaType);
                 user.videoTrack.play("stream-1-player", { mirror: false });
                 console.log("[Project A] Stream 1 playing!");
@@ -64,7 +64,7 @@
         // Stream 2 Listener (Handles UID on Project B)
         clientB.on("user-published", async (user, mediaType) => {
             console.log("[Project B] User published:", user.uid, mediaType);
-            if (mediaType === "video" && user.uid === 2) {
+            if (mediaType === "video") {
                 await clientB.subscribe(user, mediaType);
                 user.videoTrack.play("stream-2-player", { mirror: false });
                 console.log("[Project B] Stream 2 playing!");
@@ -101,11 +101,11 @@
                 await clientB.setClientRole("audience");
                
                 // Web Client A joins Project A
-                await clientA.join(appIdA, channelName, tokenA, 1);
+                await clientA.join(appIdA, channelName, tokenA, null);
                 console.log("[Project A] Web Receiver Connected");
 
                 // Web Client B joins Project B
-                await clientB.join(appIdB, channelName, tokenB, 2);
+                await clientB.join(appIdB, channelName, tokenB, null);
                 console.log("[Project B] Web Receiver Connected");
             } catch (err) {
                 console.error("[Agora Web Receiver Error]", err);

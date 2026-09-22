@@ -35,16 +35,25 @@
         const tokenA = urlParams.get('tokenA')?.trim();
         const tokenB = urlParams.get('tokenB')?.trim();
 
-        if (!appIdA || appIdA.length !== 32) {
-            console.error("appIdA is invalid or corrupted:", appIdA);
-        }
-        if (!appIdB || appIdB.length !== 32) {
-            console.error("appIdB is invalid or corrupted:", appIdB);
-        }
+        // Debug output: Check exact parsed values directly in browser console
+        console.log("[Debug] appIdA:", appIdA);
+        console.log("[Debug] appIdB:", appIdB);
+        console.log("[Debug] tokenA loaded:", Boolean(tokenA));
+        console.log("[Debug] tokenB loaded:", Boolean(tokenB));
+
+        // Validate parameters
+        const isAppIdAValid = appIdA && appIdA.length === 32;
+        const isAppIdBValid = appIdB && appIdB.length === 32;
+        const areTokensPresent = Boolean(tokenA) && Boolean(tokenB);
         
-        if (!appIdA || !appIdB || !tokenA || !tokenB) {
-            console.error("Missing tokens or appIds. Provide them in the URL.");
-            alert("Missing Agora Tokens or appIds in URL. Format expected: ?appIdA=APP_ID&appIdB=APP_ID&tokenA=TOKEN_A&tokenB=TOKEN_B");
+        if (!isAppIdAValid) {
+            console.error("appIdA is missing or not 32 characters long:", appIdA);
+        }
+        if (!isAppIdBValid) {
+            console.error("appIdB is missing or not 32 characters long:", appIdB);
+        }
+        if (!areTokensPresent) {
+            console.error("Missing tokenA or tokenB in URL query parameters.");
         }
         
         const channelName = "AR_VR_Workspace";
@@ -85,6 +94,11 @@
         });
         
         async function startMonitor() {
+           if (!isAppIdAValid || !isAppIdBValid || !areTokensPresent) {
+                console.error("Cannot start monitor: One or more parameters are invalid.");
+                alert("Connection aborted: Check console for parameter errors.");
+                return;
+           }
            try {
                 await clientA.setClientRole("audience");
                 await clientB.setClientRole("audience");
@@ -101,9 +115,7 @@
             }
         }
        
-        if (appIdA && appIdB && tokenA && tokenB) {
-            startMonitor();
-        }
+        startMonitor();
     </script>
 </body>
 </html>
